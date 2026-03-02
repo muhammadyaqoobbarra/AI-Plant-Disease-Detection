@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+
+# Weights (large — use Git LFS or DVC)
+backend/models/weights/*.pth
+backend/models/weights/*.pt
+
+# Generated
+backend/static/heatmaps/
+data/
+
+# Env
+.env
+*.env.local
+
+# Node
+node_modules/
+frontend/build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Logs
+*.log
+logs/
+evaluation_results/

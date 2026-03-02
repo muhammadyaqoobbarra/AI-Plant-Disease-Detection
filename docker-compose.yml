@@ -1,0 +1,46 @@
+version: '3.9'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - ENV=production
+      - WORKERS=2
+      - ALLOWED_ORIGINS=http://localhost:3000
+      - WEIGHTS_DIR=/app/models/weights
+    volumes:
+      - ./backend/models/weights:/app/models/weights
+      - ./backend/static:/app/static
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+# GPU profile — uncomment + run: docker-compose --profile gpu up
+# backend-gpu:
+#   extends: backend
+#   deploy:
+#     resources:
+#       reservations:
+#         devices:
+#           - driver: nvidia
+#             count: 1
+#             capabilities: [gpu]
